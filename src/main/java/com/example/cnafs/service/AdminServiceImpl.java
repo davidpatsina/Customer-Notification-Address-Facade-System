@@ -6,6 +6,7 @@ import com.example.cnafs.exception.CnafsException;
 import com.example.cnafs.repository.AdminRepository;
 import com.example.cnafs.repository.model.AdminEntity;
 import com.example.cnafs.service.model.Admin;
+import com.example.cnafs.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,10 @@ import static com.example.cnafs.util.HashUtil.sha256;
 public class AdminServiceImpl implements AdminService{
 
     @Autowired
-    AdminRepository adminRepository;
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public String signUp(Admin admin) {
@@ -33,5 +37,28 @@ public class AdminServiceImpl implements AdminService{
                 .build();
         adminRepository.save(adminEntity);
         return adminEntity.getId().toString();
+    }
+
+    public String signIn(Admin admin) {
+        if (!adminRepository.existsByUsername(admin.getUsername())) {
+            throwUsernameOrPasswordError();
+        }
+
+        AdminEntity adminEntity = adminRepository.findByUsername(admin.getUsername());
+        String hashedPassword = sha256(admin.getPassword());
+
+        if (!adminEntity.getPassword().equals(hashedPassword)) {
+            throwUsernameOrPasswordError();
+        }
+
+        String token = jwtUtil.generateToken(adminEntity);
+
+        return token;
+    }
+
+    private void throwUsernameOrPasswordError() {
+        String errorMessage =   CnafsErrorMessage.USERNAME_OR_PASSWORD_IS_INCORRECT;
+        log.error("Failed to sign-in admin: {}", errorMessage);
+        throw new CnafsException(errorMessage, CnafsErrorCode.INVALID_INPUT);
     }
 }

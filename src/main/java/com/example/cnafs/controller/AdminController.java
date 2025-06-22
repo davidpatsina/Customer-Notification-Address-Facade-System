@@ -1,7 +1,7 @@
 package com.example.cnafs.controller;
 
+import com.example.cnafs.controller.model.SignInInput;
 import com.example.cnafs.controller.model.SignUpInput;
-import com.example.cnafs.repository.AdminRepository;
 import com.example.cnafs.service.AdminService;
 import com.example.cnafs.service.model.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,20 @@ public class AdminController {
                 .password(input.getPassword())
                 .build();
 
-        return ResponseEntity.ok(adminService.signUp(admin));
+        String id = adminService.signUp(admin);
+
+        return ResponseEntity.ok(id);
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<String> signIn(@RequestBody SignInInput input) {
+        Admin admin = Admin.builder()
+                .username(input.getUsername())
+                .password(input.getPassword())
+                .build();
+
+        String token = adminService.signIn(admin);
+
+        return ResponseEntity.ok(token);
     }
 }
