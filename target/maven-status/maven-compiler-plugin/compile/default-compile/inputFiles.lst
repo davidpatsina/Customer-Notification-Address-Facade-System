@@ -1,3 +1,5 @@
-/Users/neurologist/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/CnafsApplication.java
-/Users/neurologist/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/config/DatabaseConfig.java
-/Users/neurologist/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/config/SecurityConfig.java
+/home/patsina/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/CnafsApplication.java
+/home/patsina/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/config/DatabaseConfig.java
+/home/patsina/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/config/SecurityConfig.java
+/home/patsina/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/repository/AdminRepository.java
+/home/patsina/Projects/Customer-Notification-Address-Facade-System/src/main/java/com/example/cnafs/repository/model/AdminEntity.java

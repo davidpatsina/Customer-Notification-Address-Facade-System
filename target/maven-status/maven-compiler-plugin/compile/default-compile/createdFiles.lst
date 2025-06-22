@@ -1,3 +1,5 @@
 com/example/cnafs/config/DatabaseConfig.class
 com/example/cnafs/config/SecurityConfig.class
+com/example/cnafs/repository/AdminRepository.class
 com/example/cnafs/CnafsApplication.class
+com/example/cnafs/repository/model/AdminEntity.class
