@@ -9,5 +9,9 @@ public interface CnafsErrorMessage {
 
     String CUSTOMER_WITH_NAME_EXISTS = "Customer with name (%s) already exists";
 
-    String CUSTOMER_WITH_ID_DOESNT_EXISTS = "Customer with id (%s) doesn't exists";
+    String CUSTOMER_DOESNT_EXIST = "Customer doesn't exist";
+
+    String NOTIFICATION_PREFERENCE_DOES_NOT_EXIST = "Notification preference does not exist";
+
+    String NOTIFICATION_PREFERENCE_EXISTS = "Notification preference already exists";
 }

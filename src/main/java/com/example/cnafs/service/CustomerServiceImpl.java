@@ -5,11 +5,12 @@ import com.example.cnafs.exception.CnafsErrorMessage;
 import com.example.cnafs.exception.CnafsException;
 import com.example.cnafs.repository.CustomerRepository;
 import com.example.cnafs.repository.model.*;
-import com.example.cnafs.service.model.Customer;
+import com.example.cnafs.service.model.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,45 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private AdminService adminService;
+
+    @Override
+    public List<Customer> getCustomers(String adminId) {
+        List<CustomerEntity> customerEntities = customerRepository.findAll();
+        List<Customer> customers = new ArrayList<>();
+
+        for (CustomerEntity customerEntity : customerEntities) {
+            List<NotificationPreference> preferences = new ArrayList<>();
+            for (NotificationPreferenceEntity notificationPreferenceEntity : customerEntity.getPreferences()){
+                NotificationPreference notificationPreference = NotificationPreference.builder()
+                        .id(notificationPreferenceEntity.getId().toString())
+                        .isOptedIn(notificationPreferenceEntity.getIsOptedIn())
+                        .notificationPreferenceType(NotificationPreferenceType.valueOf(String.valueOf(notificationPreferenceEntity.getNotificationPreferenceType())))
+                        .build();
+                preferences.add(notificationPreference);
+            }
+
+            List<Address> addresses = new ArrayList<>();
+            for (AddressEntity addressEntity : customerEntity.getAddresses()){
+                Address address = Address.builder()
+                        .id(addressEntity.getId().toString())
+                        .addressType(AddressType.valueOf(String.valueOf(addressEntity.getAddressType())))
+                        .value(addressEntity.getValue())
+                        .build();
+                addresses.add(address);
+            }
+
+
+            Customer customer = Customer.builder()
+                    .id(customerEntity.getId().toString())
+                    .name(customerEntity.getName())
+                    .notificationPreferences(preferences)
+                    .addresses(addresses)
+                    .build();
+            customers.add(customer);
+        }
+
+        return customers;
+    }
 
     @Override
     public String createCustomer(String adminId, Customer customer) {
@@ -81,6 +121,12 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.save(customerEntity);
     }
 
+    @Override
+    public boolean existCustomer(String customerId) {
+        Optional<CustomerEntity> customerRepositoryOptional = customerRepository.findById(Long.parseLong(customerId));
+        return !customerRepositoryOptional.isEmpty();
+    }
+
 
     private void checkAdminExistence(String adminId, String logErrorMessage) {
         if (!adminService.adminExistenceById(adminId)) {
@@ -93,11 +139,13 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerEntity getCustomerEntityById(String customerId, String logErrorMessage) {
         Optional<CustomerEntity> customerRepositoryOptional = customerRepository.findById(Long.parseLong(customerId));
         if (customerRepositoryOptional.isEmpty()) {
-            String errorMessage = String.format(CnafsErrorMessage.CUSTOMER_WITH_ID_DOESNT_EXISTS, customerId);
+            String errorMessage = String.format(CnafsErrorMessage.CUSTOMER_DOESNT_EXIST);
             log.error(logErrorMessage, errorMessage);
             throw new CnafsException(errorMessage, CnafsErrorCode.NOT_FOUND);
         }
 
         return customerRepositoryOptional.get();
     }
+
+
 }

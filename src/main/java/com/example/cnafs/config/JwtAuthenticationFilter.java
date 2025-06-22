@@ -29,14 +29,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+
             String token = authHeader.substring(7);
+            System.out.println("Processing request: " + request.getRequestURI());
+            System.out.println("Token extracted: " + (token != null ? "YES" : "NO"));
             try {
                 Map<String, Object> claims = jwtUtil.parseToken(token);
-                String userId = (String) claims.get("sub");
+                String userId = claims.get("sub").toString();
 
                 long exp = Long.parseLong(claims.get("exp").toString());
                 long now = System.currentTimeMillis()/1000;
-                Boolean isExpired = now - exp > 0;
+                Boolean isExpired = exp < now;
 
                 if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null && !isExpired) {
                     UsernamePasswordAuthenticationToken authentication =
