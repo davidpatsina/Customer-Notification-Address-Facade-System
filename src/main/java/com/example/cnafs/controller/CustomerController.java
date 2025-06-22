@@ -1,16 +1,14 @@
 package com.example.cnafs.controller;
 
 import com.example.cnafs.controller.model.CreateCustomerInput;
+import com.example.cnafs.controller.model.UpdateCustomerNameInput;
 import com.example.cnafs.service.CustomerService;
 import com.example.cnafs.service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,5 +49,24 @@ public class CustomerController {
                 .build();
 
         return ResponseEntity.ok(customerService.createCustomer(adminId, customer));
+    }
+
+    @DeleteMapping("/delete_customer/{customerId}")
+    public ResponseEntity<?> deleteCustomer(Authentication authentication, @PathVariable String customerId) {
+        String adminId = authentication.getPrincipal().toString();
+        customerService.deleteCustomer(adminId, customerId);
+        return ResponseEntity.ok("Successfully deleted customer with id " + customerId);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateCustomerName(Authentication authentication, @RequestBody UpdateCustomerNameInput input) {
+        String adminId = authentication.getPrincipal().toString();
+        Customer customer = Customer.builder()
+                .id(input.getCustomerId())
+                .name(input.getCustomerName())
+                .build();
+
+        customerService.updateCustomerName(adminId, customer);
+        return ResponseEntity.ok("Customer's name is successfully updated");
     }
  }

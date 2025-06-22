@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SignUpInput {
 
-    @Size(min = 4, message = "Name must be at least 3 characters")
+    @Size(min = 4, message = "Name must be at least 4 characters")
     String username;
 
     @Size(min = 6, message = "Password must be at least 6 characters")

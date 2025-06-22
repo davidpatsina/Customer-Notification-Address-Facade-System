@@ -7,5 +7,7 @@ public interface CnafsErrorMessage {
 
     String ADMIN_DOES_NOT_EXIST = "Admin does not exist";
 
-    String CUSTOMER_WITH_NAME_EXISTS = "Customer with name(%s) already exists";
+    String CUSTOMER_WITH_NAME_EXISTS = "Customer with name (%s) already exists";
+
+    String CUSTOMER_WITH_ID_DOESNT_EXISTS = "Customer with id (%s) doesn't exists";
 }

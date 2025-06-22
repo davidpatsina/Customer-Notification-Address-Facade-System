@@ -34,7 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Map<String, Object> claims = jwtUtil.parseToken(token);
                 String userId = (String) claims.get("sub");
 
-                if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                long exp = Long.parseLong(claims.get("exp").toString());
+                long now = System.currentTimeMillis()/1000;
+                Boolean isExpired = now - exp > 0;
+
+                if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null && !isExpired) {
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userId, null, null);
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
