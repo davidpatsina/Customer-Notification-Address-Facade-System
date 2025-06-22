@@ -9,4 +9,7 @@ public interface AddressService {
     void updateAddress(String adminId, Address address);
     void deleteAddress(String adminId, String CustomerId);
     List<Address> getAddressListByCustomerId(String adminId, String CustomerId);
+    boolean isAddressOpted(String addressId);
+    boolean existAddress(String addressId);
+
 }

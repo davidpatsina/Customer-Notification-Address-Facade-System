@@ -4,11 +4,11 @@ import com.example.cnafs.exception.CnafsErrorCode;
 import com.example.cnafs.exception.CnafsErrorMessage;
 import com.example.cnafs.exception.CnafsException;
 import com.example.cnafs.repository.AddressRepository;
-import com.example.cnafs.repository.model.AddressEntity;
-import com.example.cnafs.repository.model.AddressTypeEntity;
-import com.example.cnafs.repository.model.CustomerEntity;
+import com.example.cnafs.repository.model.*;
 import com.example.cnafs.service.model.Address;
 import com.example.cnafs.service.model.AddressType;
+import com.example.cnafs.service.model.NotificationPreference;
+import com.example.cnafs.service.model.NotificationPreferenceType;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,9 @@ public class AddressServiceImpl implements AddressService{
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private NotificationPreferenceService notificationPreferenceService;
 
     @Autowired
     private CustomerService customerService;
@@ -46,6 +49,11 @@ public class AddressServiceImpl implements AddressService{
                 .customer(customerEntity)
                 .build();
 
+        NotificationPreference notificationPreference = NotificationPreference.builder()
+                .isOptedIn(true)
+                .notificationPreferenceType(NotificationPreferenceType.valueOf(String.valueOf(addressEntity.getAddressType())))
+                .build();
+        notificationPreferenceService.addNotificationPreference(adminId, customerId, notificationPreference);
         return addressRepository.save(addressEntity).getId().toString();
     }
 
@@ -105,6 +113,33 @@ public class AddressServiceImpl implements AddressService{
             addresses.add(address);
         }
         return addresses;
+    }
+
+    @Override
+    public boolean isAddressOpted(String addressId) {
+        Optional <AddressEntity> addressEntityOptional = addressRepository.findById(Long.parseLong(addressId));
+        if (addressEntityOptional.isEmpty()) {
+            String errorMessage = CnafsErrorMessage.ADDRESS_DOESNT_EXISTS;
+            log.error(errorMessage, errorMessage);
+            throw new CnafsException(errorMessage, CnafsErrorCode.NOT_FOUND);
+        }
+
+        AddressEntity addressEntity = addressEntityOptional.get();
+        List<NotificationPreferenceEntity> preferences= addressEntity.getCustomer().getPreferences();
+        for (NotificationPreferenceEntity currPref: preferences) {
+            boolean isSameType = currPref.getNotificationPreferenceType().equals(NotificationPreferenceTypeEntity.valueOf(String.valueOf(addressEntity.getAddressType())));
+            if (isSameType) {
+                return currPref.getIsOptedIn();
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean existAddress(String addressId) {
+        Optional<AddressEntity> addressEntityOptional = addressRepository.findById(Long.parseLong(addressId));
+        return !addressEntityOptional.isEmpty();
     }
 
     private void checkAdminExistence(String adminId, String logErrorMessage) {

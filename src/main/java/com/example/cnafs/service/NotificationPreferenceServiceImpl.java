@@ -68,9 +68,7 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
             NotificationPreferenceTypeEntity currNotPrefType = currNotPref.getNotificationPreferenceType();
             NotificationPreferenceType newNotPrefType = notificationPreference.getNotificationPreferenceType();
             if(currNotPrefType == NotificationPreferenceTypeEntity.valueOf(String.valueOf(newNotPrefType))) {
-                String errorMessage = CnafsErrorMessage.NOTIFICATION_PREFERENCE_EXISTS;
-                log.error(errorLog, errorMessage);
-                throw new CnafsException(errorMessage, CnafsErrorCode.CONFLICT);
+                return currNotPref.getId().toString();
             }
         }
 
@@ -104,8 +102,6 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
                     .build();
             result.add(notificationPreference);
         }
-
-
 
         return result;
     }
