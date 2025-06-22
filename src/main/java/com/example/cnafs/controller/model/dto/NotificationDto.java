@@ -16,7 +16,5 @@ public class NotificationDto {
 
     private String notificationStatusType;
 
-
-    @Column(name = "text", nullable = false)
     private String text;
 }
