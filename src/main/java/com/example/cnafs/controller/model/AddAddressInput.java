@@ -1,5 +1,6 @@
 package com.example.cnafs.controller.model;
 
+import com.example.cnafs.controller.model.dto.AddressDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
@@ -8,11 +9,9 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateNewNotificationPreferenceInput {
-    @NotBlank(message = "NotificationPreferenceId is mandatory")
-    String notificationPreferenceId;
+public class AddAddressInput {
+    @NotBlank(message = "CustomerId is mandatory")
+    String customerId;
 
-    String notificationPreferenceType;
-
-    Boolean isOpted;
+    AddressDto address;
 }

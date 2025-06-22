@@ -42,6 +42,7 @@ public class NotificationPreferenceController {
 
         NotificationPreference notificationPreference = NotificationPreference.builder()
                 .id(input.getNotificationPreferenceId())
+                .notificationPreferenceType(NotificationPreferenceType.valueOf(input.getNotificationPreferenceType()))
                 .isOptedIn(input.getIsOpted())
                 .build();
 

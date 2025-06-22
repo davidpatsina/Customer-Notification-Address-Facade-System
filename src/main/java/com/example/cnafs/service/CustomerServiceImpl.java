@@ -29,33 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<Customer> customers = new ArrayList<>();
 
         for (CustomerEntity customerEntity : customerEntities) {
-            List<NotificationPreference> preferences = new ArrayList<>();
-            for (NotificationPreferenceEntity notificationPreferenceEntity : customerEntity.getPreferences()){
-                NotificationPreference notificationPreference = NotificationPreference.builder()
-                        .id(notificationPreferenceEntity.getId().toString())
-                        .isOptedIn(notificationPreferenceEntity.getIsOptedIn())
-                        .notificationPreferenceType(NotificationPreferenceType.valueOf(String.valueOf(notificationPreferenceEntity.getNotificationPreferenceType())))
-                        .build();
-                preferences.add(notificationPreference);
-            }
-
-            List<Address> addresses = new ArrayList<>();
-            for (AddressEntity addressEntity : customerEntity.getAddresses()){
-                Address address = Address.builder()
-                        .id(addressEntity.getId().toString())
-                        .addressType(AddressType.valueOf(String.valueOf(addressEntity.getAddressType())))
-                        .value(addressEntity.getValue())
-                        .build();
-                addresses.add(address);
-            }
-
-
-            Customer customer = Customer.builder()
-                    .id(customerEntity.getId().toString())
-                    .name(customerEntity.getName())
-                    .notificationPreferences(preferences)
-                    .addresses(addresses)
-                    .build();
+            Customer customer = customerEntityToCustomer(customerEntity);
             customers.add(customer);
         }
 
@@ -147,5 +121,45 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepositoryOptional.get();
     }
 
+    private Customer customerEntityToCustomer (CustomerEntity customerEntity) {
+        List<NotificationPreference> preferences = new ArrayList<>();
+        for (NotificationPreferenceEntity notificationPreferenceEntity : customerEntity.getPreferences()){
+            NotificationPreference notificationPreference = NotificationPreferenceEntitytoNotificationPreference(notificationPreferenceEntity);
+            preferences.add(notificationPreference);
+        }
+
+        List<Address> addresses = new ArrayList<>();
+        for (AddressEntity addressEntity : customerEntity.getAddresses()){
+            Address address = AddressEntitytoAddress(addressEntity);
+            addresses.add(address);
+        }
+
+        Customer customer = Customer.builder()
+                .id(customerEntity.getId().toString())
+                .name(customerEntity.getName())
+                .notificationPreferences(preferences)
+                .addresses(addresses)
+                .build();
+
+        return customer;
+    }
+
+    private NotificationPreference NotificationPreferenceEntitytoNotificationPreference(NotificationPreferenceEntity notificationPreferenceEntity) {
+        NotificationPreference notificationPreference = NotificationPreference.builder()
+                .id(notificationPreferenceEntity.getId().toString())
+                .isOptedIn(notificationPreferenceEntity.getIsOptedIn())
+                .notificationPreferenceType(NotificationPreferenceType.valueOf(String.valueOf(notificationPreferenceEntity.getNotificationPreferenceType())))
+                .build();
+        return notificationPreference;
+    }
+
+    private Address AddressEntitytoAddress(AddressEntity addressEntity) {
+        Address address = Address.builder()
+                .id(addressEntity.getId().toString())
+                .addressType(AddressType.valueOf(String.valueOf(addressEntity.getAddressType())))
+                .value(addressEntity.getValue())
+                .build();
+        return address;
+    }
 
 }

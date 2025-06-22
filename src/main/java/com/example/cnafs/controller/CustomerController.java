@@ -7,9 +7,12 @@ import com.example.cnafs.controller.model.dto.AddressDto;
 import com.example.cnafs.controller.model.dto.CustomerDto;
 import com.example.cnafs.controller.model.dto.NotificationPreferenceDto;
 import com.example.cnafs.service.CustomerService;
-import com.example.cnafs.service.model.*;
+import com.example.cnafs.service.model.Address;
+import com.example.cnafs.service.model.AddressType;
+import com.example.cnafs.service.model.Customer;
+import com.example.cnafs.service.model.NotificationPreference;
+import com.example.cnafs.service.model.NotificationPreferenceType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.ParameterResolutionDelegate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -84,31 +87,7 @@ public class CustomerController {
         List<CustomerDto> customerDtos = new ArrayList<>();
 
         for (Customer customer : customers) {
-            List <NotificationPreferenceDto> notificationPreferenceDtots = new ArrayList<>();
-            for (NotificationPreference notificationPreference : customer.getNotificationPreferences()){
-                NotificationPreferenceDto notificationPreferenceDto = NotificationPreferenceDto.builder()
-                        .id(notificationPreference.getId())
-                        .isOpted(notificationPreference.getIsOptedIn())
-                        .notificationPreferenceType(String.valueOf(notificationPreference.getNotificationPreferenceType()))
-                        .build();
-                notificationPreferenceDtots.add(notificationPreferenceDto);
-            }
-
-            List <AddressDto> addressDtos = new ArrayList<>();
-            for (Address address : customer.getAddresses()){
-                AddressDto addressDto = AddressDto.builder()
-                        .addressType(String.valueOf(address.getAddressType()))
-                        .value(address.getValue())
-                        .build();
-                addressDtos.add(addressDto);
-            }
-
-            CustomerDto customerDto = CustomerDto.builder()
-                    .id(customer.getId())
-                    .name(customer.getName())
-                    .notificationPreferenceDtos(notificationPreferenceDtots)
-                    .addressDtos(addressDtos)
-                    .build();
+            CustomerDto customerDto = customerToCustomerDto(customer);
             customerDtos.add(customerDto);
         }
 
@@ -117,5 +96,49 @@ public class CustomerController {
                 .build();
 
         return ResponseEntity.ok(output);
+    }
+
+
+    private CustomerDto customerToCustomerDto(Customer customer) {
+        List <NotificationPreferenceDto> notificationPreferenceDtots = new ArrayList<>();
+        for (NotificationPreference notificationPreference : customer.getNotificationPreferences()){
+            NotificationPreferenceDto notificationPreferenceDto = notificationPreferenceToNotificationPreferenceDto(notificationPreference);
+            notificationPreferenceDtots.add(notificationPreferenceDto);
+        }
+
+        List <AddressDto> addressDtos = new ArrayList<>();
+        for (Address address : customer.getAddresses()){
+            AddressDto addressDto = addressToAddressDto(address);
+            addressDtos.add(addressDto);
+        }
+
+        CustomerDto customerDto = CustomerDto.builder()
+                .id(customer.getId())
+                .name(customer.getName())
+                .notificationPreferenceDtos(notificationPreferenceDtots)
+                .addressDtos(addressDtos)
+                .build();
+
+        return customerDto;
+    }
+
+    private AddressDto addressToAddressDto(Address address) {
+        AddressDto addressDto = AddressDto.builder()
+                .id(address.getId())
+                .addressType(String.valueOf(address.getAddressType()))
+                .value(address.getValue())
+                .build();
+
+        return addressDto;
+    }
+
+    private NotificationPreferenceDto notificationPreferenceToNotificationPreferenceDto (NotificationPreference notificationPreference) {
+        NotificationPreferenceDto notificationPreferenceDto = NotificationPreferenceDto.builder()
+                .id(notificationPreference.getId())
+                .isOpted(notificationPreference.getIsOptedIn())
+                .notificationPreferenceType(String.valueOf(notificationPreference.getNotificationPreferenceType()))
+                .build();
+
+        return notificationPreferenceDto;
     }
  }

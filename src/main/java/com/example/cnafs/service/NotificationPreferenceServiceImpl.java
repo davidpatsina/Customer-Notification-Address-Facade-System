@@ -41,8 +41,19 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
             log.error(errorLog,errorMessage);
             throw new CnafsException(errorMessage, CnafsErrorCode.NOT_FOUND);
         }
+
         NotificationPreferenceEntity notificationPreferenceEntity = notificationPreferenceEntityOptional.get();
-        notificationPreferenceEntity.setIsOptedIn(notificationPreference.getIsOptedIn());
+
+        NotificationPreferenceType updNotfPrefTyp = notificationPreference.getNotificationPreferenceType();
+        Boolean isUpdatedNotificationPreferenceType = (updNotfPrefTyp == NotificationPreferenceType.POSTAL ||updNotfPrefTyp == NotificationPreferenceType.SMS || updNotfPrefTyp == NotificationPreferenceType.EMAIL);
+        if (updNotfPrefTyp != null && isUpdatedNotificationPreferenceType) {
+            notificationPreferenceEntity.setNotificationPreferenceType(NotificationPreferenceTypeEntity.valueOf(String.valueOf(updNotfPrefTyp)));
+        }
+
+        if (notificationPreference.getIsOptedIn() != null) {
+            notificationPreferenceEntity.setIsOptedIn(notificationPreference.getIsOptedIn());
+        }
+
         notificationPreferenceRepository.save(notificationPreferenceEntity);
     }
 

@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AddressDto {
+    String id;
+
     @Size(min = 3, message = "Address value must be at least 3 characters")
     String value;
 
