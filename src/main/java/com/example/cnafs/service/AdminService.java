@@ -8,4 +8,5 @@ public interface AdminService {
 
     String signIn(Admin admin);
 
+    boolean adminExistenceById(String id);
 }

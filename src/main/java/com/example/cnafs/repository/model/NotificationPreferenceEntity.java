@@ -18,8 +18,8 @@ public class NotificationPreferenceEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "notification_type",nullable = false)
-    private NotificationPreferenceTypeEntity notificationType;
+    @Column(name = "notification_preference_type",nullable = false)
+    private NotificationPreferenceTypeEntity notificationPreferenceType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)

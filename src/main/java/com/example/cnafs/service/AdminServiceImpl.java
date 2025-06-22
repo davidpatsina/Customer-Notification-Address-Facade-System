@@ -11,6 +11,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.example.cnafs.util.HashUtil.sha256;
 
 @Log4j2
@@ -39,6 +41,7 @@ public class AdminServiceImpl implements AdminService{
         return adminEntity.getId().toString();
     }
 
+    @Override
     public String signIn(Admin admin) {
         if (!adminRepository.existsByUsername(admin.getUsername())) {
             throwUsernameOrPasswordError();
@@ -54,6 +57,12 @@ public class AdminServiceImpl implements AdminService{
         String token = jwtUtil.generateToken(adminEntity);
 
         return token;
+    }
+
+    @Override
+    public boolean adminExistenceById(String id) {
+        Optional<AdminEntity> adminEntityOptional = adminRepository.findById(Long.parseLong(id));
+        return !adminEntityOptional.isEmpty();
     }
 
     private void throwUsernameOrPasswordError() {
