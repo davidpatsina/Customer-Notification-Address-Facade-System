@@ -22,8 +22,8 @@ public class NotificationEntity {
     private NotificationStatusEntity notificationStatusType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private CustomerEntity customer;
+    @JoinColumn(name = "address_id", nullable = false)
+    private AddressEntity address;
 
     @Column(name = "text", nullable = false)
     private String text;

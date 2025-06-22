@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +27,9 @@ public class AddressEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "address_type",nullable = false)
     private AddressTypeEntity addressType;
+
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<NotificationEntity> notifications = new ArrayList<>();
 
     @Column(name = "value", nullable = false)
     private String value;

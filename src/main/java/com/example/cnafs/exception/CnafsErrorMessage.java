@@ -16,4 +16,8 @@ public interface CnafsErrorMessage {
     String NOTIFICATION_PREFERENCE_EXISTS = "Notification preference already exists";
 
     String ADDRESS_DOESNT_EXISTS = "Address doesn't exist";
+
+    String NOTIFICATION_DOESNT_EXISTS = "Notification doesn't exist";
+
+    String NOTIFICATION_PREFERENCE_IS_NOT_OPTED_ON_ITS_ADDRESS = "Notification preference isn't opted on its address";
 }
